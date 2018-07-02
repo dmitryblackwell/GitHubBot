@@ -18,6 +18,13 @@ public class Main{
                 TwitterKeys.AccessTokenSecret);
 
         ((GitMonitor) monitor).update();
+        try {
+            System.out.println("start");
+            Thread.sleep(60_000);
+            System.out.println("stop");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         monitor.start();
 
     }
