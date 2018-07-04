@@ -17,18 +17,16 @@ public class Main{
                 TwitterKeys.AccessToken,
                 TwitterKeys.AccessTokenSecret);
 
+        // updating all repos
         ((GitMonitor) monitor).update();
-        try {
-            System.out.println("start");
-            Thread.sleep(60_000);
-            System.out.println("stop");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // start monitoring git activity ones per hour
         monitor.start();
 
     }
 
+    /**
+     * deleting all tweets from your twitter
+     */
     private static void allTweetDelete(){
         ConfigurationBuilder builder = new ConfigurationBuilder();
 

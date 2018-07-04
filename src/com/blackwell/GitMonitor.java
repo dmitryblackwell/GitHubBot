@@ -16,6 +16,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * Monitoring all git activity ones per hour
+ */
 public class GitMonitor extends Thread {
     private String gitLogin;
     private Twitter twitter;
@@ -24,6 +27,7 @@ public class GitMonitor extends Thread {
 
     //https://api.github.com/users/dmitryblackwell/repos
     //https://api.github.com/repos/dmitryblackwell/JavaFX/commits
+    // strings to make url requests
     private static final String API_GIT = "https://api.github.com/";
     private static final String USERS = "users";
     private static final String REPOS = "repos";
@@ -32,6 +36,7 @@ public class GitMonitor extends Thread {
     private static final String COMMIT_TO = "Commit to ";
 
 
+    // constructor with git username and keys to twitter
     GitMonitor(String gitLogin, String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
         this.gitLogin = gitLogin;
 
@@ -47,6 +52,9 @@ public class GitMonitor extends Thread {
         twitter = factory.getInstance();
     }
 
+    /**
+     * updating data in the map with repos
+     */
     public void update(){
         try {
             checkForRepos();
@@ -64,6 +72,11 @@ public class GitMonitor extends Thread {
         }
     }
 
+    /**
+     * checking repositories
+     * @throws IOException reading from https
+     * @throws ParseException parsing to json
+     */
     private synchronized void checkForRepos() throws IOException, ParseException {
         URL url = new URL(API_GIT + USERS +"/"+ gitLogin +"/"+ REPOS);
 
@@ -79,6 +92,13 @@ public class GitMonitor extends Thread {
         }
     }
 
+    /**
+     * searching for new commits
+     * Download all commits and compare them to commits, that already downloaded
+     * @return list of untracked commits
+     * @throws IOException exception of reading from https
+     * @throws ParseException parsing to json error
+     */
     private synchronized List<String> getNotTrackedCommits() throws IOException, ParseException {
         List<String> notTrackedCommits = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : repos.entrySet()){
@@ -99,6 +119,11 @@ public class GitMonitor extends Thread {
         return notTrackedCommits;
     }
 
+    /**
+     *
+     * @param url where download json
+     * @return JSONArray that downloaded
+     */
     private JSONArray getJsonFileFromURL(URL url) throws IOException, ParseException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -111,6 +136,9 @@ public class GitMonitor extends Thread {
         return  (JSONArray) parser.parse(sb.toString());
     }
 
+    /**
+     * send all commits to twitter
+     */
     public void sendAll(){
         try {
             repos.clear();
