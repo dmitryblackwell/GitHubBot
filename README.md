@@ -25,6 +25,10 @@ You need to add file with your keys for twitter. You can do it by using next pat
 package com.blackwell;
 
 class TwitterKeys {
+    // init logger
+    private static final Logger LOG = Logger.getLogger(TwitterKeys.class);               
+    static { LOG.debug("starting to initialized twitter keys"); }
+    
     // Consumer key
     static final String ConsumerKey = "";
     // Consumer secret
@@ -33,15 +37,33 @@ class TwitterKeys {
     static final String AccessToken = "";
     // Access token secret
     static final String AccessTokenSecret = "";
+    
+    static { LOG.debug("Twitter keys was initialized"); }
 }
 ```
 
+1. Add all libraries to your project.
+
+Go to the 
+```
+File -> Project Structure -> Libraries
+```
+and press green plus, java. After select all jars from lib-folder and click OK.
 
 ## How it works?
 
 Bot updating map with all your commits and after checking every hour if there are new commits.
 Why only one hour? Because GitHub got there restriction on request per hour. So for now, without authorization on github, you can do it only ones per hour.
 
+#### Example of request url
+
+```
+// getting all repos
+https://api.github.com/users/dmitryblackwell/repos
+
+// getting commits for special repo
+https://api.github.com/repos/dmitryblackwell/GitHubBot/commits
+```
 
 
 ## Version
